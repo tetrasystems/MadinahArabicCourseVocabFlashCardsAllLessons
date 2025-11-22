@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madinah Book 1 - Lesson 5 Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+            direction: ltr;
+        }
+
+        .lesson-info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            direction: ltr;
+        }
+
+        .flashcard {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 60px 40px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .flashcard:hover {
+            transform: translateY(-5px);
+        }
+
+        .arabic-word {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 30px;
+            text-align: center;
+            font-family: 'Traditional Arabic', 'Arial', sans-serif;
+        }
+
+        .english-translation {
+            font-size: 28px;
+            color: #667eea;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            direction: ltr;
+        }
+
+        .english-translation.show {
+            opacity: 1;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            direction: ltr;
+        }
+
+        .reveal-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .reveal-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .nav-btn {
+            background: #48bb78;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            background: #38a169;
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .home-btn {
+            background: #ed8936;
+            color: white;
+        }
+
+        .home-btn:hover {
+            background: #dd6b20;
+            transform: scale(1.05);
+        }
+
+        .counter {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #4a5568;
+            font-weight: 600;
+            direction: ltr;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .arabic-word {
+                font-size: 36px;
+            }
+
+            .english-translation {
+                font-size: 22px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Madinah Arabic Course</h1>
+        <div class="lesson-info">Book 1 - Lesson 5 Vocabulary</div>
+        
+        <div class="flashcard">
+            <div class="arabic-word" id="arabicWord"></div>
+            <div class="english-translation" id="englishTranslation"></div>
+        </div>
+
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousCard()">◄ Previous</button>
+            <button class="reveal-btn" id="revealBtn" onclick="revealTranslation()">Reveal Answer</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextCard()">Next ►</button>
+        </div>
+        <div class="controls">
+            <button class="home-btn" onclick="window.location.href='index.html'">🏠 Back to All Lessons</button>
+        </div>
+
+        <div class="counter" id="counter"></div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <script>
+        const vocabulary = [{"arabic": "\u0641\u064e\u064a\u0652\u0635\u064e\u0644\u064c", "english": "Faisal"}, {"arabic": "\u0645\u064e\u0633\u0652\u0639\u064f\u0648\u062f\u064c", "english": "Masood"}, {"arabic": "\u0648\u064e\u0632\u0650\u064a\u0631\u064c", "english": "Minister"}, {"arabic": "\u0623\u064f\u0633\u0652\u062a\u064e\u0627\u0630\u064c", "english": "Teacher/Professor"}, {"arabic": "\u0633\u064e\u064a\u064e\u0651\u0627\u0631\u064e\u0629\u064c", "english": "Car"}, {"arabic": "\u0625\u0650\u0628\u0652\u0646\u064c", "english": "Son"}, {"arabic": "\u0627\u0644\u0644\u0647\u064f", "english": "Allah"}, {"arabic": "\u0625\u0650\u0633\u0652\u0645\u064c", "english": "Name"}, {"arabic": "\u0627\u0644\u0652\u0639\u0650\u0631\u064e\u0627\u0642\u064f", "english": "Iraq"}, {"arabic": "\u0645\u064f\u0646\u064e\u0648\u064e\u0651\u0631\u064e\u0629\u064c", "english": "Illuminated"}, {"arabic": "\u064a\u064e\u0627", "english": "O"}, {"arabic": "\u0647\u064f\u0646\u064e\u0627\u0643\u064e", "english": "There"}, {"arabic": "\u0647\u064f\u0646\u064e\u0627", "english": "Here"}, {"arabic": "\u062d\u064e\u0642\u0650\u064a\u0628\u064e\u0629\u064c", "english": "Bag"}, {"arabic": "\u062a\u064e\u062d\u0652\u062a\u064e", "english": "Under/beneath"}, {"arabic": "\u0628\u0650\u0646\u0652\u062a\u064c", "english": "Girl/daughter"}, {"arabic": "\u0639\u064e\u0645\u064c\u0651", "english": "Paternal uncle"}, {"arabic": "\u0645\u064f\u063a\u0652\u0644\u064e\u0642\u064c", "english": "Closed"}, {"arabic": "\u062e\u064e\u0627\u0644\u064c", "english": "Maternal uncle"}, {"arabic": "\u0634\u064e\u0627\u0631\u0650\u0639\u064c", "english": "Street"}];
+
+        let currentCard = 0;
+        let revealed = false;
+
+        function displayCard() {
+            document.getElementById('arabicWord').textContent = vocabulary[currentCard].arabic;
+            document.getElementById('englishTranslation').textContent = vocabulary[currentCard].english;
+            document.getElementById('englishTranslation').classList.remove('show');
+            document.getElementById('counter').textContent = `Card ${currentCard + 1} of ${vocabulary.length}`;
+            
+            const progress = ((currentCard + 1) / vocabulary.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            document.getElementById('prevBtn').disabled = currentCard === 0;
+            document.getElementById('nextBtn').disabled = currentCard === vocabulary.length - 1;
+            
+            revealed = false;
+            document.getElementById('revealBtn').textContent = 'Reveal Answer';
+        }
+
+        function revealTranslation() {
+            if (!revealed) {
+                document.getElementById('englishTranslation').classList.add('show');
+                document.getElementById('revealBtn').textContent = 'Hide Answer';
+                revealed = true;
+            } else {
+                document.getElementById('englishTranslation').classList.remove('show');
+                document.getElementById('revealBtn').textContent = 'Reveal Answer';
+                revealed = false;
+            }
+        }
+
+        function nextCard() {
+            if (currentCard < vocabulary.length - 1) {
+                currentCard++;
+                displayCard();
+            }
+        }
+
+        function previousCard() {
+            if (currentCard > 0) {
+                currentCard--;
+                displayCard();
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+                nextCard();
+            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+                previousCard();
+            } else if (event.key === ' ' || event.key === 'Enter') {
+                event.preventDefault();
+                revealTranslation();
+            }
+        });
+
+        displayCard();
+    </script>
+</body>
+</html>
